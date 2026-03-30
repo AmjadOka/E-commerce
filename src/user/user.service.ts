@@ -22,7 +22,7 @@ export class UserService {
     @InjectModel(User.name) private userModel: Model<User>,
     private jwtService: JwtService,
   ) {}
-
+  //create by admin
   async create(
     createUserDto: CreateUserDto,
   ): Promise<{ status: number; message: string; data: User }> {
@@ -48,7 +48,7 @@ export class UserService {
       data: await this.userModel.create({ ...createUserDto, ...user }),
     };
   }
-
+  //find all by admin
   async findAll(query) {
     const { _limit = 1000, skip = 0, sort = 'asc', name, email, role } = query;
     if (!(role === 'admin')) {
@@ -82,7 +82,7 @@ export class UserService {
       data: users,
     };
   }
-
+  //find by id only admin
   async findOne(id: string): Promise<{ status: number; data: User }> {
     const user = await this.userModel.findById(id).select('-password -__v');
     if (!user) {
@@ -90,7 +90,7 @@ export class UserService {
     }
     return { status: 200, data: user };
   }
-
+  //update by id only admin
   async update(
     id: string,
     updateUserDto: UpdateUserDto,
@@ -116,7 +116,7 @@ export class UserService {
       }),
     };
   }
-
+  //recive id and delete user
   async remove(id: string): Promise<{ status: number; message: string }> {
     const user = await this.userModel.findById(id).select('-password -__v');
     if (!user) {

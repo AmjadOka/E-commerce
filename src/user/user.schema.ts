@@ -52,10 +52,19 @@ export class User {
     enum: [false, true],
   })
   active: boolean;
-  @Prop({
-    type: String,
-  })
-  verificationCode: string;
+
+  @Prop()
+  resetTokenHash?: string;
+
+  @Prop()
+  resetCode?: string;
+
+  @Prop()
+  resetExpires?: Date;
+
+  @Prop({ default: false })
+  isResetVerified?: boolean;
+
   @Prop({
     type: String,
     enum: ['male', 'female'],

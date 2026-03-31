@@ -35,7 +35,7 @@ export class AuthController {
   //@docs Any User Can Reset Password
   //@Route POST/api/v1/auth/reset-password
   //@access Public
-  @Post('rest-password')
+  @Post('reset-password')
   async resetPassword(
     @Body(
       new ValidationPipe({
@@ -62,7 +62,7 @@ export class AuthController {
       code: string;
     },
   ) {
-    return this.authService.verifyCode(verifyCode);
+    return this.authService.verifyResetCode(verifyCode);
   }
 
   // @docsAny User Can change password
@@ -71,8 +71,15 @@ export class AuthController {
   @Post('change-password')
   changePassword(
     @Body(new ValidationPipe({ forbidNonWhitelisted: true }))
-    password: SignInDto,
+    changePassword: {
+      token: string;
+      newPassword: string;
+    },
   ) {
-    return this.authService.changePassword(password);
+    console.log(changePassword);
+    return this.authService.changePassword(
+      changePassword.token,
+      changePassword.newPassword,
+    );
   }
 }

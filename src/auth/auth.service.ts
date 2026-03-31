@@ -1,4 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 import {
+  BadRequestException,
   HttpException,
   Injectable,
   NotFoundException,
@@ -11,6 +14,7 @@ import * as bcrypt from 'bcrypt';
 import { ResetPasswordDto, SignInDto, SignUpDto } from './Dto/auth.dto';
 import { JwtService } from '@nestjs/jwt';
 import { MailerService } from '@nestjs-modules/mailer';
+import * as crypto from 'crypto';
 const saltOrRounds = 10;
 @Injectable()
 export class AuthService {
@@ -77,81 +81,95 @@ export class AuthService {
 
   async resetPassword({ email }: ResetPasswordDto) {
     const user = await this.userModel.findOne({ email });
-    if (!user) {
-      throw new NotFoundException('User Not Found');
-    }
-    // create code 6 digit
-    const code = Math.floor(Math.random() * 1000000)
-      .toString()
-      .padStart(6, '0');
-    // inser code in db=> verificationCode
-    await this.userModel.findOneAndUpdate(
-      { email },
-      { verificationCode: code },
-    );
-    // send code to user email
-    const htmlMessage = `
-    <div>
-      <h1>Forgot your password? If you didn't forget your password, please ignore this email!</h1>
-      <p>Use the following code to verify your account: <h3 style="color: red; font-weight: bold; text-align: center">${code}</h3></p>
-      <h6 style="font-weight: bold">Ecommerce-Nest.JS</h6>
-    </div>
-    `;
 
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    const rawToken = crypto.randomBytes(32).toString('hex');
+
+    const tokenHash = crypto
+      .createHash('sha256')
+      .update(rawToken)
+      .digest('hex');
+
+    const code = Math.floor(100000 + Math.random() * 900000).toString();
+
+    user.resetTokenHash = tokenHash;
+    user.resetCode = code;
+    user.resetExpires = new Date(Date.now() + 10 * 60 * 1000);
+    user.isResetVerified = false;
+
+    await user.save();
+
+    // 🔥 link
+    const resetLink = `http://localhost:3000/reset-password?token=${rawToken}`;
+
+    //  sending via nodeMailer
     await this.mailService.sendMail({
-      from: `Ecommerce-Nest.JS <${process.env.MAIL_USER}>`,
-      to: email,
-      subject: `Ecommerce-Nest.JS - Reset Password`,
-      html: htmlMessage,
+      from: 'e-commerce NestJs',
+      to: user.email,
+      subject: 'Password Reset',
+      html: `
+      <h3>Password Reset Request</h3>
+      <p>Your verification code is:</p>
+      <h2>${code}</h2>
+      <p>Click the link below to continue:</p>
+      <a href="${resetLink}">${resetLink}</a>
+      <p>This link expires in 10 minutes</p>
+    `,
     });
-    return {
-      status: 200,
-      message: `Code sent successfully on your email (${email})`,
-    };
-  }
-
-  async verifyCode({ email, code }: { email: string; code: string }) {
-    const user = await this.userModel
-      .findOne({ email })
-      .select('verificationCode');
-
-    if (!user) {
-      throw new NotFoundException('User Not Found');
-    }
-
-    if (user.verificationCode !== code) {
-      throw new UnauthorizedException('Invalid code');
-    }
-
-    await this.userModel.findOneAndUpdate(
-      { email },
-      { verificationCode: null },
-    );
 
     return {
       status: 200,
-      message: 'Code verified successfully, go to change your password',
+      message: 'Reset email sent successfully',
     };
   }
 
-  async changePassword(changePasswordData: SignInDto) {
+  async verifyResetCode({ email, code }) {
     const user = await this.userModel.findOne({
-      email: changePasswordData.email,
+      email,
+      resetExpires: { $gt: new Date() },
     });
-    if (!user) {
-      throw new NotFoundException('User Not Found');
+
+    if (!user || user.resetCode !== code) {
+      throw new BadRequestException('Invalid or expired code');
     }
-    const password = await bcrypt.hash(
-      changePasswordData.password,
-      saltOrRounds,
-    );
-    await this.userModel.findOneAndUpdate(
-      { email: changePasswordData.email },
-      { password },
-    );
+
+    user.isResetVerified = true;
+    await user.save();
+
     return {
       status: 200,
-      message: 'Password changed successfully, go to login',
+      message: 'Code verified successfully',
+    };
+  }
+
+  async changePassword(token, newPassword) {
+    const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
+
+    const user = await this.userModel.findOne({
+      resetTokenHash: tokenHash,
+      resetExpires: { $gt: new Date() },
+      isResetVerified: true,
+    });
+
+    if (!user) {
+      throw new BadRequestException('Invalid or expired request');
+    }
+
+    user.password = await bcrypt.hash(newPassword, 10);
+
+    // 🧨 delete reset data
+    user.resetTokenHash = undefined;
+    user.resetCode = undefined;
+    user.resetExpires = undefined;
+    user.isResetVerified = false;
+
+    await user.save();
+
+    return {
+      message: 'Password changed successfully',
     };
   }
 }

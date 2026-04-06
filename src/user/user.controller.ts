@@ -43,7 +43,8 @@ export class UserController {
   @Get()
   @Roles(['admin'])
   @UseGuards(AuthGuard)
-  findAll(@Query() query) {
+  findAll(@Query() query, @Req() req) {
+    console.log(req['user']);
     return this.userService.findAll(query);
   }
   //@docs Admin Can get one User

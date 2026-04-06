@@ -81,7 +81,7 @@ export class AuthService {
 
   async resetPassword({ email }: ResetPasswordDto) {
     const user = await this.userModel.findOne({ email });
-
+    console.log(email, 'ds');
     if (!user) {
       throw new NotFoundException('User not found');
     }

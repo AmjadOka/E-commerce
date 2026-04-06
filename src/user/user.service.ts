@@ -6,7 +6,6 @@ import {
   HttpException,
   Injectable,
   NotFoundException,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -51,9 +50,7 @@ export class UserService {
   //find all by admin
   async findAll(query) {
     const { _limit = 1000, skip = 0, sort = 'asc', name, email, role } = query;
-    if (!(role === 'admin')) {
-      throw new UnauthorizedException('not allowed enternce');
-    }
+
     if (Number.isNaN(Number(+_limit))) {
       throw new HttpException('Invalid limit', 400);
     }
@@ -112,7 +109,7 @@ export class UserService {
       status: 200,
       message: 'user updated successfully',
       data: <User>await this.userModel.findByIdAndUpdate(id, user, {
-        new: true,
+        returnDocument: 'after',
       }),
     };
   }
@@ -187,7 +184,7 @@ export class UserService {
     await this.userModel.findOneAndUpdate(
       payload._id,
       { active: false },
-      { new: true },
+      { returnDocument: 'after' },
     );
   }
 }

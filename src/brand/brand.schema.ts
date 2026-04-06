@@ -1,15 +1,15 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 
-export type categoryDocument = HydratedDocument<Category>;
+export type BrandDocument = HydratedDocument<Brand>;
 
 @Schema({ timestamps: true })
-export class Category {
+export class Brand {
   @Prop({
     type: String,
     required: true,
     min: [3, 'Name must be at least 3 characters'],
-    max: [40, 'Name must be at most 30 characters'],
+    max: [100, 'Name must be at most 30 characters'],
   })
   name: string;
   @Prop({
@@ -18,4 +18,4 @@ export class Category {
   image: string;
 }
 
-export const categorySchema = SchemaFactory.createForClass(Category);
+export const brandSchema = SchemaFactory.createForClass(Brand);

@@ -10,7 +10,10 @@ export class BrandService {
   constructor(@InjectModel(Brand.name) private brandModel: Model<Brand>) {}
 
   async create(createBrandDto: CreateBrandDto) {
-    const brand = await this.brandModel.findOne({ name: createBrandDto.name });
+    const brand = await this.brandModel.findOne({
+      name: createBrandDto.name.toLowerCase(),
+    });
+
     if (brand) {
       throw new HttpException('Brand already exist', 400);
     }

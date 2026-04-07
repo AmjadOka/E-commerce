@@ -29,7 +29,6 @@ export class UserService {
     const userExists = await this.userModel.find({
       email: createUserDto.email,
     });
-    console.log(userExists);
     //if user exists return
     if (!userExists) throw new HttpException('user already exists', 400);
 

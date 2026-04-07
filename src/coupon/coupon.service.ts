@@ -58,7 +58,7 @@ export class CouponService {
       id,
       updateCouponDto,
       {
-        new: true,
+        returnDocument: 'after',
       },
     );
     return {

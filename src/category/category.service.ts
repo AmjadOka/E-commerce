@@ -13,7 +13,7 @@ export class CategoryService {
 
   async create(createCategoryDto: CreateCategoryDto) {
     const category = await this.categoryModel.findOne({
-      name: createCategoryDto.name,
+      name: createCategoryDto.name.toLowerCase(),
     });
 
     if (category) {

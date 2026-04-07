@@ -13,7 +13,7 @@ export class SuppliersService {
 
   async create(createSuppliersDto: CreateSuppliersDto) {
     const supplier = await this.suppliersModule.findOne({
-      name: createSuppliersDto.name,
+      name: createSuppliersDto.name.toLowerCase(),
     });
     if (supplier) {
       throw new HttpException('supplier already exist', 400);
@@ -60,7 +60,7 @@ export class SuppliersService {
       id,
       updateSuppliersDto,
       {
-        new: true,
+        returnDocument: 'after',
       },
     );
     return {

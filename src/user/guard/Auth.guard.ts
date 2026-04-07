@@ -1,7 +1,7 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import {
   CanActivate,
   ExecutionContext,
@@ -23,14 +23,13 @@ export class AuthGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
     const token = this.extractTokenFromHeader(request);
-
     const roles = this.reflector.get(Roles, context.getHandler());
-    //public reach
+
     if (!roles) {
       return true;
     }
+
     if (!token) {
-      console.log(1);
       throw new UnauthorizedException();
     }
 
@@ -45,18 +44,21 @@ export class AuthGuard implements CanActivate {
       }
 
       if (
-        !payload.role &&
-        payload.role === '' &&
+        !payload.role ||
+        payload.role === '' ||
         !roles.includes(payload.role)
       ) {
         throw new UnauthorizedException();
       }
+      // 💡 We're assigning the payload to the request object here
+      // so that we can access it in our route handlers
       request['user'] = payload;
     } catch {
       throw new UnauthorizedException();
     }
     return true;
   }
+
   private extractTokenFromHeader(request: Request): string | undefined {
     const [type, token] = request.headers.authorization?.split(' ') ?? [];
     return type === 'Bearer' ? token : undefined;

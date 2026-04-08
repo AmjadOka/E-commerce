@@ -96,7 +96,7 @@ export class RequestProductController {
     if (req.user.role.toLowerCase() === 'admin') {
       throw new UnauthorizedException();
     }
-    const user_id = req.user._id;
+    const user_id: string = req.user._id;
     return this.requestProductService.remove(id, user_id);
   }
 }

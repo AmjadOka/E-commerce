@@ -45,7 +45,7 @@ export class ProductService {
         throw new HttpException('This Sub Category not Exist', 400);
       }
     }
-    const priceAfterDiscount = createProductDto?.priceAfterDiscount || 0;
+    const priceAfterDiscount = createProductDto?.discount || 0;
     if (createProductDto.price < priceAfterDiscount) {
       throw new HttpException(
         'Must be price After discount greater than price',
@@ -121,7 +121,7 @@ export class ProductService {
 
   async update(id: string, updateProductDto: UpdateProductDto) {
     const product = await this.productModel.findById(id);
-    console.log(id, 'id');
+
     if (!product) {
       throw new NotFoundException('Procut Not Found');
     }
@@ -150,8 +150,7 @@ export class ProductService {
     }
 
     const price = updateProductDto?.price || product.price;
-    const priceAfterDiscount =
-      updateProductDto?.priceAfterDiscount || product.priceAfterDiscount;
+    const priceAfterDiscount = updateProductDto?.discount || product.discount;
     if (price < priceAfterDiscount) {
       throw new HttpException(
         'Must be price After discount greater than price',

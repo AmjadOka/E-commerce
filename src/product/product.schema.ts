@@ -8,6 +8,7 @@ export type productDocument = HydratedDocument<Product>;
 
 @Schema({ timestamps: true })
 export class Product {
+  _id: Types.ObjectId;
   @Prop({
     type: String,
     required: true,
@@ -56,7 +57,7 @@ export class Product {
     default: 0,
     max: [200000, 'Price must be at least 200000'],
   })
-  priceAfterDiscount: number;
+  discount: number;
   @Prop({
     type: Array,
     required: false,

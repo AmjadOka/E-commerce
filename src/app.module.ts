@@ -15,6 +15,8 @@ import { SuppliersModule } from './suppliers/suppliers.module';
 import { RequestProductModule } from './request-product/request-product.module';
 import { TaxModule } from './tax/tax.module';
 import { ProductModule } from './product/product.module';
+import { ReviewModule } from './review/review.module';
+import { CartModule } from './cart/cart.module';
 
 @Module({
   imports: [
@@ -46,6 +48,8 @@ import { ProductModule } from './product/product.module';
     RequestProductModule,
     TaxModule,
     ProductModule,
+    ReviewModule,
+    CartModule,
   ],
   controllers: [AppController],
   providers: [AppService],

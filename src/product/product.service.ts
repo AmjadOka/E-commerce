@@ -121,7 +121,7 @@ export class ProductService {
 
   async update(id: string, updateProductDto: UpdateProductDto) {
     const product = await this.productModel.findById(id);
-
+    console.log(id, 'id');
     if (!product) {
       throw new NotFoundException('Procut Not Found');
     }

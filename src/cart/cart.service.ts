@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { HttpException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { Cart } from './cart.schema';
@@ -107,9 +107,47 @@ export class CartService {
       data: cart,
     };
   }
-  findAll() {
-    return 1;
+
+  async applyCoupon(user_id: Types.ObjectId, couponName: string) {
+    const cart = await this.cartModel.findOne({ user: user_id });
+    const coupon = await this.couponModel.findOne({ name: couponName });
+
+    if (!cart) {
+      throw new NotFoundException('Not Found Cart');
+    }
+    if (!coupon) {
+      throw new HttpException('Invalid coupon', 400);
+    }
+    const isExpired = new Date(coupon.expireDate) > new Date();
+    if (!isExpired) {
+      throw new HttpException('Invalid coupon', 400);
+    }
+
+    const ifCouponAlredyUsed = cart.coupons.findIndex(
+      (item) => item.name === couponName,
+    );
+    if (ifCouponAlredyUsed !== -1) {
+      throw new HttpException('Coupon alredy used', 400);
+    }
+
+    if (cart.totalPrice <= 0) {
+      throw new HttpException('You have full discount', 400);
+    }
+
+    cart.coupons.push({
+      name: coupon.name,
+      couponId: coupon._id.toString(),
+    });
+    cart.totalPrice = cart.totalPrice - coupon.discount;
+    await cart.save();
+
+    return {
+      status: 200,
+      message: 'Coupon Applied',
+      data: cart,
+    };
   }
+
   async update(
     productId: Types.ObjectId,
     user_id: Types.ObjectId,
@@ -202,6 +240,38 @@ export class CartService {
       status: 200,
       message: 'Cart updated successfully',
       data: cart,
+    };
+  }
+
+  //////////for  admins
+
+  async findOneForAdmin(userId: string) {
+    const cart = await this.cartModel
+      .findOne({ user: userId })
+      .populate('cartItems.productId', 'price title description');
+    if (!cart) {
+      throw new NotFoundException('Not Found Cart');
+    }
+    return {
+      status: 200,
+      message: 'Found Cart',
+      data: cart,
+    };
+  }
+
+  async findAllForAdmin() {
+    const carts = await this.cartModel
+      .find()
+      .select('-__v')
+      .populate(
+        'cartItems.productId user coupons.couponId',
+        'name email expireDate price title description',
+      );
+    return {
+      status: 200,
+      message: 'Found All Carts',
+      length: carts.length,
+      data: carts,
     };
   }
 }

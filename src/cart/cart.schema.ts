@@ -43,8 +43,25 @@ export class Cart {
     color?: string;
   }[];
 
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: Coupon.name })
-  coupon?: Types.ObjectId;
+  @Prop({
+    type: [
+      {
+        name: {
+          type: String,
+        },
+        couponId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: Coupon.name,
+        },
+      },
+    ],
+  })
+  coupons: [
+    {
+      name: string;
+      couponId: string;
+    },
+  ];
 
   @Prop({ default: 0 })
   totalPrice: number;

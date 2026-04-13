@@ -44,6 +44,19 @@ export class CartController {
     const user_id = req.user._id;
     return this.cartService.create(productId, user_id);
   }
+  @Post('/coupon/:couponName')
+  @Roles(['user'])
+  @UseGuards(AuthGuard)
+  applyCoupon(
+    @Param('couponName') couponName: string,
+    @Req() req: AuthRequest,
+  ) {
+    if (req.user.role.toLowerCase() === 'admin') {
+      throw new UnauthorizedException();
+    }
+    const user_id = req.user._id;
+    return this.cartService.applyCoupon(user_id, couponName);
+  }
 
   @Get()
   @Roles(['user'])
@@ -82,5 +95,24 @@ export class CartController {
     const user_id = req.user._id;
 
     return this.cartService.remove(productId, user_id);
+  }
+
+  //  @docs   Can Admin Get Any Cart of user
+  //  @Route  GET /api/v1/cart/admin/:userId
+  //  @access Private [Admin]
+  @Get('/admin/:userId')
+  @Roles(['admin'])
+  @UseGuards(AuthGuard)
+  findOneForAdmin(@Param('userId') userId: string) {
+    return this.cartService.findOneForAdmin(userId);
+  }
+  //  @docs   Can Admin Get All Carts
+  //  @Route  GET /api/v1/cart/admin
+  //  @access Private [Admin]
+  @Get('/admin')
+  @Roles(['admin'])
+  @UseGuards(AuthGuard)
+  findAllForAdmin() {
+    return this.cartService.findAllForAdmin();
   }
 }

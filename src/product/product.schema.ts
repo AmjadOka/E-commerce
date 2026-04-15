@@ -34,7 +34,8 @@ export class Product {
   })
   imageCover: string;
   @Prop({
-    type: Array,
+    type: [String],
+    default: [],
     required: false,
   })
   images: string[];

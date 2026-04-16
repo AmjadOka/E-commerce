@@ -16,13 +16,11 @@ import { Tax } from 'src/tax/tax.schema';
 import { Product } from 'src/product/product.schema';
 import { MailerService } from '@nestjs-modules/mailer';
 import { CreateOrderDto, AcceptOrderCashDto } from './dto/create-order.dto';
-
-const stripe = new Stripe(
-  'sk_test_51TM37yEIZGVu0bnpCWjFHHJMi9SY50BSCGx2USdSCjIWlVCRTu04ReANX7hd6IlYaSMgHTVeLYHaM32XLpl7kLZQ00oQKWEl4x',
-  {
-    apiVersion: '2026-03-25.dahlia',
-  },
-);
+if (!process.env.STRIPE_SECRET_KEY)
+  throw new Error('STRIPE_SECRET_KEY is not defined in environment variables');
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY?.toString(), {
+  apiVersion: '2026-03-25.dahlia',
+});
 @Injectable()
 export class OrderService {
   constructor(

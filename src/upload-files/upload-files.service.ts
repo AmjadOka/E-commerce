@@ -5,7 +5,7 @@ import { v2 as cloudinary } from 'cloudinary';
 import { CloudinaryResponse } from './cloudinary-response';
 
 import { UploadApiResponse } from 'cloudinary';
-import * as streamifier from 'streamifier';
+import { Readable } from 'stream';
 
 @Injectable()
 export class CloudinaryService {
@@ -21,8 +21,8 @@ export class CloudinaryService {
     return new Promise((resolve, reject) => {
       const uploadStream = cloudinary.uploader.upload_stream(
         {
-          folder: 'uploads', // 🔥 organize your files
-          resource_type: 'auto', // handles images, videos, etc.
+          folder: 'uploads',
+          resource_type: 'auto',
         },
         (error, result) => {
           if (error) {
@@ -34,28 +34,26 @@ export class CloudinaryService {
           }
 
           resolve(result);
-
-          try {
-            const stream: NodeJS.ReadableStream = streamifier.createReadStream(
-              file.buffer,
-            );
-
-            stream.on('error', (err: Error) => {
-              reject(new Error(`Stream error: ${err.message}`));
-            });
-
-            stream.pipe(uploadStream);
-          } catch (err) {
-            if (err instanceof Error) {
-              reject(new Error(`Stream creation error: ${err.message}`));
-            } else {
-              reject(
-                new Error('Unknown error occurred during stream creation'),
-              );
-            }
-          }
         },
       );
+
+      try {
+        const stream = Readable.from(file.buffer); // 🔥 no need for streamifier
+
+        stream.on('error', (err: Error) => {
+          reject(new Error(`Stream error: ${err.message}`));
+        });
+
+        stream.pipe(uploadStream); // ✅ pipe BEFORE callback fires
+      } catch (err) {
+        reject(
+          new Error(
+            err instanceof Error
+              ? `Stream creation error: ${err.message}`
+              : 'Unknown stream error',
+          ),
+        );
+      }
     });
   }
   async uploadFiles(files: any[]): Promise<CloudinaryResponse[]> {

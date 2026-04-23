@@ -30,15 +30,17 @@ export class UploadFilesController {
       new ParseFilePipe({
         validators: [
           new MaxFileSizeValidator({
-            maxSize: 500000,
-            message: 'File is too large must be less than 500KB',
+            maxSize: 5 * 1024 * 1024,
           }),
-          new FileTypeValidator({ fileType: 'image/png/jpeg/jpg' }),
+          new FileTypeValidator({
+            fileType: /(jpg|jpeg|png|webp)$/i,
+          }),
         ],
       }),
     )
-    file: any,
+    file: Express.Multer.File,
   ) {
+    console.log(file.size, 'file');
     return this.cloudinaryService.uploadFile(file);
   }
   //  @docs  Admin can upload images or files

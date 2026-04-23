@@ -30,7 +30,7 @@ export class UserService {
       email: createUserDto.email,
     });
     //if user exists return
-    if (!userExists) throw new HttpException('user already exists', 400);
+    if (userExists) throw new HttpException('user already exists', 400);
 
     //create new user
 

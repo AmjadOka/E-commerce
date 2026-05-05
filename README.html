@@ -1,0 +1,659 @@
+
+<h2 class="sr-only">NestJS E-Commerce API — full documentation for all 10 modules including Order, Product, Review, SubCategory, and RequestProduct</h2>
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+.root { padding: 1.5rem 0; font-family: var(--font-sans); }
+.header { margin-bottom: 2rem; }
+.hpre { font-family: var(--font-mono); font-size: 12px; font-weight: 500; color: var(--color-text-secondary); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 6px; }
+.htitle { font-size: 22px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 8px; }
+.hdesc { font-size: 13px; color: var(--color-text-secondary); line-height: 1.6; }
+.badges { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+.badge { font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 99px; }
+.b-nest { background: #E8F5E0; color: #2E6B0F; }
+.b-mongo { background: #E4F0E8; color: #1B5E20; }
+.b-jwt { background: #EDE9F8; color: #4A2E9A; }
+.b-stripe { background: #E5EDFF; color: #1A3A8F; }
+.b-mail { background: #FDF3E0; color: #7A4F00; }
+.b-v2 { background: #FDECEA; color: #8B0000; }
+
+.nav { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 1.5rem; }
+.nb { font-size: 12px; font-weight: 500; padding: 5px 13px; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-secondary); background: var(--color-background-primary); color: var(--color-text-secondary); cursor: pointer; font-family: var(--font-sans); transition: all 0.12s; }
+.nb:hover { background: var(--color-background-secondary); color: var(--color-text-primary); }
+.nb.active { background: var(--color-text-primary); color: var(--color-background-primary); border-color: var(--color-text-primary); }
+.nb.new-mod { border-color: #1A3A8F; color: #1A3A8F; }
+.nb.new-mod.active { background: #1A3A8F; color: #fff; border-color: #1A3A8F; }
+
+.sec { display: none; }
+.sec.visible { display: block; }
+
+.mhdr { display: flex; align-items: baseline; gap: 10px; margin-bottom: 0.75rem; padding-bottom: 10px; border-bottom: 0.5px solid var(--color-border-tertiary); flex-wrap: wrap; }
+.mtitle { font-size: 18px; font-weight: 500; color: var(--color-text-primary); }
+.mbase { font-size: 12px; font-weight: 500; padding: 3px 10px; border-radius: 99px; background: var(--color-background-secondary); color: var(--color-text-secondary); font-family: var(--font-mono); }
+.mnew { font-size: 10px; font-weight: 500; padding: 2px 8px; border-radius: 99px; background: #E5EDFF; color: #1A3A8F; }
+.mdesc { font-size: 13px; color: var(--color-text-secondary); margin-bottom: 1.25rem; line-height: 1.6; }
+
+.rt { width: 100%; border-collapse: collapse; font-size: 13px; }
+.rt th { text-align: left; font-size: 11px; font-weight: 500; color: var(--color-text-secondary); letter-spacing: 0.06em; text-transform: uppercase; padding: 6px 10px; border-bottom: 0.5px solid var(--color-border-tertiary); }
+.rt td { padding: 9px 10px; border-bottom: 0.5px solid var(--color-border-tertiary); vertical-align: top; line-height: 1.5; }
+.rt tr:last-child td { border-bottom: none; }
+.rt tr:hover td { background: var(--color-background-secondary); }
+
+.m { display: inline-block; font-size: 10px; font-weight: 500; padding: 2px 7px; border-radius: 4px; font-family: var(--font-mono); min-width: 48px; text-align: center; }
+.get { background: #E4F0E8; color: #1B5E20; }
+.post { background: #E5EDFF; color: #1A3A8F; }
+.patch { background: #FFF8E1; color: #7A4F00; }
+.delete { background: #FDECEA; color: #8B0000; }
+
+.ac { display: inline-flex; align-items: center; font-size: 11px; padding: 2px 8px; border-radius: 99px; font-weight: 500; white-space: nowrap; }
+.pub { background: var(--color-background-secondary); color: var(--color-text-secondary); border: 0.5px solid var(--color-border-tertiary); }
+.adm { background: #FDECEA; color: #8B0000; }
+.usr { background: #E5EDFF; color: #1A3A8F; }
+.both { background: #FFF8E1; color: #7A4F00; }
+.stripe { background: #EDE9F8; color: #4A2E9A; }
+
+.pc { font-family: var(--font-mono); font-size: 12px; color: var(--color-text-primary); }
+.dc { color: var(--color-text-secondary); font-size: 13px; }
+.bc { font-family: var(--font-mono); font-size: 12px; color: var(--color-text-secondary); }
+
+.info-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 1.5rem; }
+.ic { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 0.875rem; }
+.il { font-size: 11px; font-weight: 500; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; }
+.iv { font-size: 20px; font-weight: 500; color: var(--color-text-primary); }
+.is { font-size: 11px; color: var(--color-text-secondary); margin-top: 2px; }
+
+.sg { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.sc { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1rem 1.25rem; }
+.sn { font-size: 14px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 2px; }
+.snote { font-size: 11px; color: var(--color-text-secondary); margin-bottom: 10px; }
+.fr { display: flex; align-items: flex-start; gap: 8px; padding: 5px 0; border-bottom: 0.5px solid var(--color-border-tertiary); font-size: 12px; }
+.fr:last-child { border-bottom: none; }
+.fn { font-family: var(--font-mono); color: var(--color-text-primary); min-width: 120px; flex-shrink: 0; }
+.ft { color: #1A3A8F; background: #E5EDFF; padding: 1px 6px; border-radius: 4px; font-family: var(--font-mono); font-size: 11px; white-space: nowrap; }
+.fr2 { color: #8B0000; font-size: 10px; font-weight: 500; flex-shrink: 0; }
+
+.note { background: var(--color-background-secondary); border-left: 2px solid var(--color-border-secondary); padding: 10px 14px; border-radius: 0 var(--border-radius-md) var(--border-radius-md) 0; margin: 1rem 0; }
+.note p { font-size: 13px; color: var(--color-text-secondary); line-height: 1.6; }
+.note code { font-family: var(--font-mono); font-size: 12px; color: var(--color-text-primary); }
+
+.warn { background: #FFF8E1; border-left: 2px solid #EF9F27; padding: 10px 14px; border-radius: 0 var(--border-radius-md) var(--border-radius-md) 0; margin: 1rem 0; }
+.warn p { font-size: 13px; color: #7A4F00; line-height: 1.6; }
+.warn code { font-family: var(--font-mono); font-size: 12px; }
+
+.section-label { font-size: 11px; font-weight: 500; color: var(--color-text-secondary); letter-spacing: 0.06em; text-transform: uppercase; margin: 1.25rem 0 0.75rem; }
+
+.divider { border: none; border-top: 0.5px solid var(--color-border-tertiary); margin: 1.5rem 0; }
+
+.ctrl-tag { display: inline-block; font-size: 10px; padding: 1px 7px; border-radius: 99px; background: var(--color-background-secondary); border: 0.5px solid var(--color-border-tertiary); color: var(--color-text-secondary); font-family: var(--font-mono); margin-left: 6px; vertical-align: middle; }
+
+.flow { display: flex; flex-direction: column; gap: 0; margin: 1rem 0; }
+.fstep { display: flex; gap: 12px; align-items: flex-start; }
+.fline { display: flex; flex-direction: column; align-items: center; }
+.fdot { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; flex-shrink: 0; }
+.fconn { width: 1px; flex: 1; min-height: 14px; background: var(--color-border-tertiary); margin: 3px 0; }
+.fbody { padding-bottom: 18px; }
+.flabel { font-size: 13px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 2px; }
+.fdet { font-size: 12px; color: var(--color-text-secondary); font-family: var(--font-mono); }
+
+.qp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 0.75rem; }
+.qp { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 8px 12px; }
+.qp-name { font-family: var(--font-mono); font-size: 12px; color: var(--color-text-primary); margin-bottom: 2px; }
+.qp-desc { font-size: 12px; color: var(--color-text-secondary); }
+</style>
+
+<div class="root">
+  <div class="header">
+    <div class="hpre">API Reference · v2</div>
+    <div class="htitle">E-Commerce REST API</div>
+    <div class="hdesc">NestJS · MongoDB · JWT Auth · Stripe · Nodemailer — 10 modules, complete route + schema documentation</div>
+    <div class="badges">
+      <span class="badge b-nest">NestJS v10</span>
+      <span class="badge b-mongo">Mongoose / MongoDB</span>
+      <span class="badge b-jwt">JWT Auth</span>
+      <span class="badge b-stripe">Stripe Checkout</span>
+      <span class="badge b-mail">Nodemailer</span>
+      <span class="badge b-v2">14 Modules</span>
+    </div>
+  </div>
+
+  <div class="nav">
+    <button class="nb active" onclick="show('overview',this)">Overview</button>
+    <button class="nb" onclick="show('auth',this)">Auth</button>
+    <button class="nb" onclick="show('brand',this)">Brand</button>
+    <button class="nb" onclick="show('category',this)">Category</button>
+    <button class="nb" onclick="show('subcat',this)">SubCategory</button>
+    <button class="nb" onclick="show('coupon',this)">Coupon</button>
+    <button class="nb" onclick="show('product',this)">Product</button>
+    <button class="nb" onclick="show('cart',this)">Cart</button>
+    <button class="nb new-mod" onclick="show('order',this)">Order</button>
+    <button class="nb new-mod" onclick="show('review',this)">Review</button>
+    <button class="nb new-mod" onclick="show('reqprod',this)">Req. Product</button>
+    <button class="nb new-mod" onclick="show('user',this)">User</button>
+    <button class="nb new-mod" onclick="show('suppliers',this)">Suppliers</button>
+    <button class="nb new-mod" onclick="show('tax',this)">Tax</button>
+    <button class="nb new-mod" onclick="show('image',this)">Image Upload</button>
+    <button class="nb" onclick="show('schemas',this)">Schemas</button>
+  </div>
+
+  <!-- OVERVIEW -->
+  <div id="sec-overview" class="sec visible">
+    <div class="info-grid">
+      <div class="ic"><div class="il">Base URL</div><div class="iv" style="font-size:15px;font-family:var(--font-mono)">/api/v1</div><div class="is">All routes prefixed</div></div>
+      <div class="ic"><div class="il">Modules</div><div class="iv">14</div><div class="is">Auth · Brand · Category · SubCat · Coupon · Product · Cart · Order · Review · ReqProduct · User · Suppliers · Tax · Image</div></div>
+      <div class="ic"><div class="il">Auth Strategy</div><div class="iv" style="font-size:15px;font-family:var(--font-mono)">JWT Bearer</div><div class="is">HS256 via @nestjs/jwt</div></div>
+      <div class="ic"><div class="il">Payments</div><div class="iv" style="font-size:15px">Stripe</div><div class="is">Card checkout + Webhook</div></div>
+    </div>
+
+    <div class="mhdr"><span class="mtitle">Complete Route Map</span></div>
+    <table class="rt">
+      <tr><th>Module</th><th>Method</th><th>Route</th><th>Access</th></tr>
+      <tr><td class="dc">Auth</td><td><span class="m post">POST</span></td><td class="pc">/v1/auth/sign-up</td><td><span class="ac pub">Public</span></td></tr>
+      <tr><td class="dc">Auth</td><td><span class="m post">POST</span></td><td class="pc">/v1/auth/sign-in</td><td><span class="ac pub">Public</span></td></tr>
+      <tr><td class="dc">Auth</td><td><span class="m post">POST</span></td><td class="pc">/v1/auth/reset-password</td><td><span class="ac pub">Public</span></td></tr>
+      <tr><td class="dc">Auth</td><td><span class="m post">POST</span></td><td class="pc">/v1/auth/verify-code</td><td><span class="ac pub">Public</span></td></tr>
+      <tr><td class="dc">Auth</td><td><span class="m post">POST</span></td><td class="pc">/v1/auth/change-password</td><td><span class="ac pub">Public</span></td></tr>
+      <tr><td class="dc">Brand</td><td><span class="m post">POST</span></td><td class="pc">/v1/brand</td><td><span class="ac adm">Admin</span></td></tr>
+      <tr><td class="dc">Brand</td><td><span class="m get">GET</span></td><td class="pc">/v1/brand</td><td><span class="ac pub">Public</span></td></tr>
+      <tr><td class="dc">Brand</td><td><span class="m get">GET</span></td><td class="pc">/v1/brand/:id</td><td><span class="ac pub">Public</span></td></tr>
+      <tr><td class="dc">Brand</td><td><span class="m patch">PATCH</span></td><td class="pc">/v1/brand/:id</td><td><span class="ac adm">Admin</span></td></tr>
+      <tr><td class="dc">Brand</td><td><span class="m delete">DELETE</span></td><td class="pc">/v1/brand/:id</td><td><span class="ac adm">Admin</span></td></tr>
+      <tr><td class="dc">Category</td><td><span class="m post">POST</span></td><td class="pc">/v1/category</td><td><span class="ac adm">Admin</span></td></tr>
+      <tr><td class="dc">Category</td><td><span class="m get">GET</span></td><td class="pc">/v1/category</td><td><span class="ac pub">Public</span></td></tr>
+      <tr><td class="dc">Category</td><td><span class="m get">GET</span></td><td class="pc">/v1/category/:id</td><td><span class="ac pub">Public</span></td></tr>
+      <tr><td class="dc">Category</td><td><span class="m patch">PATCH</span></td><td class="pc">/v1/category/:id</td><td><span class="ac adm">Admin</span></td></tr>
+      <tr><td class="dc">Category</td><td><span class="m delete">DELETE</span></td><td class="pc">/v1/category/:id</td><td><span class="ac adm">Admin</span></td></tr>
+      <tr><td class="dc">SubCategory</td><td><span class="m post">POST</span></td><td class="pc">/v1/sub-category</td><td><span class="ac adm">Admin</span></td></tr>
+      <tr><td class="dc">SubCategory</td><td><span class="m get">GET</span></td><td class="pc">/v1/sub-category</td><td><span class="ac pub">Public</span></td></tr>
+      <tr><td class="dc">SubCategory</td><td><span class="m get">GET</span></td><td class="pc">/v1/sub-category/:id</td><td><span class="ac pub">Public</span></td></tr>
+      <tr><td class="dc">SubCategory</td><td><span class="m patch">PATCH</span></td><td class="pc">/v1/sub-category/:id</td><td><span class="ac adm">Admin</span></td></tr>
+      <tr><td class="dc">SubCategory</td><td><span class="m delete">DELETE</span></td><td class="pc">/v1/sub-category/:id</td><td><span class="ac adm">Admin</span></td></tr>
+      <tr><td class="dc">Coupon</td><td><span class="m post">POST</span></td><td class="pc">/v1/coupon</td><td><span class="ac adm">Admin</span></td></tr>
+      <tr><td class="dc">Coupon</td><td><span class="m get">GET</span></td><td class="pc">/v1/coupon</td><td><span class="ac adm">Admin</span></td></tr>
+      <tr><td class="dc">Coupon</td><td><span class="m get">GET</span></td><td class="pc">/v1/coupon/:id</td><td><span class="ac adm">Admin</span></td></tr>
+      <tr><td class="dc">Coupon</td><td><span class="m patch">PATCH</span></td><td class="pc">/v1/coupon/:id</td><td><span class="ac adm">Admin</span></td></tr>
+      <tr><td class="dc">Coupon</td><td><span class="m delete">DELETE</span></td><td class="pc">/v1/coupon/:id</td><td><span class="ac adm">Admin</span></td></tr>
+      <tr><td class="dc">Product</td><td><span class="m post">POST</span></td><td class="pc">/v1/product</td><td><span class="ac adm">Admin</span></td></tr>
+      <tr><td class="dc">Product</td><td><span class="m get">GET</span></td><td class="pc">/v1/product</td><td><span class="ac pub">Public</span></td></tr>
+      <tr><td class="dc">Product</td><td><span class="m get">GET</span></td><td class="pc">/v1/product/:id</td><td><span class="ac pub">Public</span></td></tr>
+      <tr><td class="dc">Product</td><td><span class="m patch">PATCH</span></td><td class="pc">/v1/product/:id</td><td><span class="ac adm">Admin</span></td></tr>
+      <tr><td class="dc">Product</td><td><span class="m delete">DELETE</span></td><td class="pc">/v1/product/:id</td><td><span class="ac adm">Admin</span></td></tr>
+      <tr><td class="dc">Cart</td><td><span class="m post">POST</span></td><td class="pc">/v1/cart/:productId</td><td><span class="ac usr">User</span></td></tr>
+      <tr><td class="dc">Cart</td><td><span class="m post">POST</span></td><td class="pc">/v1/cart/coupon/:couponName</td><td><span class="ac usr">User</span></td></tr>
+      <tr><td class="dc">Cart</td><td><span class="m get">GET</span></td><td class="pc">/v1/cart</td><td><span class="ac usr">User</span></td></tr>
+      <tr><td class="dc">Cart</td><td><span class="m patch">PATCH</span></td><td class="pc">/v1/cart/:productId</td><td><span class="ac usr">User</span></td></tr>
+      <tr><td class="dc">Cart</td><td><span class="m delete">DELETE</span></td><td class="pc">/v1/cart/:id</td><td><span class="ac usr">User</span></td></tr>
+      <tr><td class="dc">Cart</td><td><span class="m get">GET</span></td><td class="pc">/v1/cart/admin/:userId</td><td><span class="ac adm">Admin</span></td></tr>
+      <tr><td class="dc">Cart</td><td><span class="m get">GET</span></td><td class="pc">/v1/cart/admin</td><td><span class="ac adm">Admin</span></td></tr>
+      <tr><td class="dc">Order</td><td><span class="m post">POST</span></td><td class="pc">/v1/cart/checkout/:paymentMethodType</td><td><span class="ac usr">User</span></td></tr>
+      <tr><td class="dc">Order</td><td><span class="m patch">PATCH</span></td><td class="pc">/v1/cart/checkout/:orderId/cash</td><td><span class="ac adm">Admin</span></td></tr>
+      <tr><td class="dc">Order</td><td><span class="m post">POST</span></td><td class="pc">/v1/checkout/session</td><td><span class="ac stripe">Stripe</span></td></tr>
+      <tr><td class="dc">Order</td><td><span class="m get">GET</span></td><td class="pc">/v1/order/user</td><td><span class="ac usr">User</span></td></tr>
+      <tr><td class="dc">Order</td><td><span class="m get">GET</span></td><td class="pc">/v1/order/admin</td><td><span class="ac adm">Admin</span></td></tr>
+      <tr><td class="dc">Order</td><td><span class="m get">GET</span></td><td class="pc">/v1/order/admin/:userId</td><td><span class="ac adm">Admin</span></td></tr>
+      <tr><td class="dc">Review</td><td><span class="m post">POST</span></td><td class="pc">/v1/review</td><td><span class="ac usr">User</span></td></tr>
+      <tr><td class="dc">Review</td><td><span class="m get">GET</span></td><td class="pc">/v1/review/:id</td><td><span class="ac pub">Public</span></td></tr>
+      <tr><td class="dc">Review</td><td><span class="m patch">PATCH</span></td><td class="pc">/v1/review/:id</td><td><span class="ac usr">User</span></td></tr>
+      <tr><td class="dc">Review</td><td><span class="m delete">DELETE</span></td><td class="pc">/v1/review/:id</td><td><span class="ac usr">User</span></td></tr>
+      <tr><td class="dc">Review</td><td><span class="m get">GET</span></td><td class="pc">/v1/dashboard/review/user/:id</td><td><span class="ac both">Admin · User</span></td></tr>
+      <tr><td class="dc">Req. Product</td><td><span class="m post">POST</span></td><td class="pc">/v1/req-product</td><td><span class="ac usr">User</span></td></tr>
+      <tr><td class="dc">Req. Product</td><td><span class="m get">GET</span></td><td class="pc">/v1/req-product</td><td><span class="ac adm">Admin</span></td></tr>
+      <tr><td class="dc">Req. Product</td><td><span class="m get">GET</span></td><td class="pc">/v1/req-product/:id</td><td><span class="ac both">Admin · User</span></td></tr>
+      <tr><td class="dc">Req. Product</td><td><span class="m patch">PATCH</span></td><td class="pc">/v1/req-product/:id</td><td><span class="ac usr">User</span></td></tr>
+      <tr><td class="dc">Req. Product</td><td><span class="m delete">DELETE</span></td><td class="pc">/v1/req-product/:id</td><td><span class="ac usr">User</span></td></tr>
+      <tr><td class="dc">User</td><td><span class="m post">POST</span></td><td class="pc">/v1/user</td><td><span class="ac adm">Admin</span></td></tr>
+      <tr><td class="dc">User</td><td><span class="m get">GET</span></td><td class="pc">/v1/user</td><td><span class="ac adm">Admin</span></td></tr>
+      <tr><td class="dc">User</td><td><span class="m get">GET</span></td><td class="pc">/v1/user/:id</td><td><span class="ac adm">Admin</span></td></tr>
+      <tr><td class="dc">User</td><td><span class="m patch">PATCH</span></td><td class="pc">/v1/user/:id</td><td><span class="ac adm">Admin</span></td></tr>
+      <tr><td class="dc">User</td><td><span class="m delete">DELETE</span></td><td class="pc">/v1/user/:id</td><td><span class="ac adm">Admin</span></td></tr>
+      <tr><td class="dc">User (me)</td><td><span class="m get">GET</span></td><td class="pc">/v1/userMe</td><td><span class="ac both">Admin · User</span></td></tr>
+      <tr><td class="dc">User (me)</td><td><span class="m patch">PATCH</span></td><td class="pc">/v1/userMe</td><td><span class="ac both">Admin · User</span></td></tr>
+      <tr><td class="dc">User (me)</td><td><span class="m delete">DELETE</span></td><td class="pc">/v1/userMe</td><td><span class="ac usr">User</span></td></tr>
+      <tr><td class="dc">Suppliers</td><td><span class="m post">POST</span></td><td class="pc">/v1/suppliers</td><td><span class="ac adm">Admin</span></td></tr>
+      <tr><td class="dc">Suppliers</td><td><span class="m get">GET</span></td><td class="pc">/v1/suppliers</td><td><span class="ac pub">Public</span></td></tr>
+      <tr><td class="dc">Suppliers</td><td><span class="m get">GET</span></td><td class="pc">/v1/suppliers/:id</td><td><span class="ac pub">Public</span></td></tr>
+      <tr><td class="dc">Suppliers</td><td><span class="m patch">PATCH</span></td><td class="pc">/v1/suppliers/:id</td><td><span class="ac adm">Admin</span></td></tr>
+      <tr><td class="dc">Suppliers</td><td><span class="m delete">DELETE</span></td><td class="pc">/v1/suppliers/:id</td><td><span class="ac adm">Admin</span></td></tr>
+      <tr><td class="dc">Tax</td><td><span class="m post">POST</span></td><td class="pc">/v1/tex</td><td><span class="ac adm">Admin</span></td></tr>
+      <tr><td class="dc">Tax</td><td><span class="m get">GET</span></td><td class="pc">/v1/tex</td><td><span class="ac adm">Admin</span></td></tr>
+      <tr><td class="dc">Tax</td><td><span class="m delete">DELETE</span></td><td class="pc">/v1/tex</td><td><span class="ac adm">Admin</span></td></tr>
+      <tr><td class="dc">Image Upload</td><td><span class="m post">POST</span></td><td class="pc">/v1/image/upload</td><td><span class="ac both">Admin · User</span></td></tr>
+      <tr><td class="dc">Image Upload</td><td><span class="m post">POST</span></td><td class="pc">/v1/image/uploads</td><td><span class="ac adm">Admin</span></td></tr>
+  </div>
+
+  <!-- AUTH -->
+  <div id="sec-auth" class="sec">
+    <div class="mhdr"><span class="mtitle">Authentication</span><span class="mbase">/api/v1/auth</span></div>
+    <div class="mdesc">Handles registration, login, and a three-step password reset flow. Passwords are bcrypt-hashed (saltRounds=10). Reset tokens are stored as SHA-256 hashes — raw tokens only travel via email.</div>
+    <table class="rt">
+      <tr><th style="width:80px">Method</th><th style="width:190px">Route</th><th>Description</th><th>Body</th></tr>
+      <tr><td><span class="m post">POST</span></td><td class="pc">/sign-up</td><td class="dc">Register user. Returns JWT. 400 if email exists.</td><td class="bc">name, email, password</td></tr>
+      <tr><td><span class="m post">POST</span></td><td class="pc">/sign-in</td><td class="dc">Login. Returns JWT. 404 user not found, 401 wrong password.</td><td class="bc">email, password</td></tr>
+      <tr><td><span class="m post">POST</span></td><td class="pc">/reset-password</td><td class="dc">Step 1 — emails 6-digit OTP + reset link. Expires in 10 min.</td><td class="bc">email</td></tr>
+      <tr><td><span class="m post">POST</span></td><td class="pc">/verify-code</td><td class="dc">Step 2 — validates OTP, sets isResetVerified=true on user.</td><td class="bc">email, code</td></tr>
+      <tr><td><span class="m post">POST</span></td><td class="pc">/change-password</td><td class="dc">Step 3 — accepts raw token, sets new password, purges reset fields.</td><td class="bc">token, newPassword</td></tr>
+    </table>
+    <div class="note" style="margin-top:1rem"><p>JWT payload: <code>_id</code>, <code>email</code>, <code>role</code>. Send as <code>Authorization: Bearer &lt;token&gt;</code> on all protected routes.</p></div>
+  </div>
+
+  <!-- BRAND -->
+  <div id="sec-brand" class="sec">
+    <div class="mhdr"><span class="mtitle">Brand</span><span class="mbase">/api/v1/brand</span></div>
+    <div class="mdesc">Admin-managed product brands. Names are compared case-insensitively to prevent duplicates. Public read access.</div>
+    <table class="rt">
+      <tr><th style="width:80px">Method</th><th style="width:140px">Route</th><th>Description</th><th>Access</th><th>Body</th></tr>
+      <tr><td><span class="m post">POST</span></td><td class="pc">/</td><td class="dc">Create brand. 400 if name exists.</td><td><span class="ac adm">Admin</span></td><td class="bc">name, image?</td></tr>
+      <tr><td><span class="m get">GET</span></td><td class="pc">/</td><td class="dc">All brands, excludes __v.</td><td><span class="ac pub">Public</span></td><td class="bc">—</td></tr>
+      <tr><td><span class="m get">GET</span></td><td class="pc">/:id</td><td class="dc">Single brand by ObjectId. 404 if not found.</td><td><span class="ac pub">Public</span></td><td class="bc">—</td></tr>
+      <tr><td><span class="m patch">PATCH</span></td><td class="pc">/:id</td><td class="dc">Partial update. Returns updated doc.</td><td><span class="ac adm">Admin</span></td><td class="bc">name?, image?</td></tr>
+      <tr><td><span class="m delete">DELETE</span></td><td class="pc">/:id</td><td class="dc">Permanently delete. Returns void.</td><td><span class="ac adm">Admin</span></td><td class="bc">—</td></tr>
+    </table>
+  </div>
+
+  <!-- CATEGORY -->
+  <div id="sec-category" class="sec">
+    <div class="mhdr"><span class="mtitle">Category</span><span class="mbase">/api/v1/category</span></div>
+    <div class="mdesc">Product categorization. List endpoint includes an <code style="font-family:var(--font-mono);font-size:12px">isEmpty</code> flag. Lookup uses <code style="font-family:var(--font-mono);font-size:12px">findOne({ _id })</code>.</div>
+    <table class="rt">
+      <tr><th style="width:80px">Method</th><th style="width:140px">Route</th><th>Description</th><th>Access</th><th>Body</th></tr>
+      <tr><td><span class="m post">POST</span></td><td class="pc">/</td><td class="dc">Create category. 400 if name exists (lowercase match).</td><td><span class="ac adm">Admin</span></td><td class="bc">name, image?</td></tr>
+      <tr><td><span class="m get">GET</span></td><td class="pc">/</td><td class="dc">All categories. Returns length + isEmpty flag.</td><td><span class="ac pub">Public</span></td><td class="bc">—</td></tr>
+      <tr><td><span class="m get">GET</span></td><td class="pc">/:id</td><td class="dc">Single category. 404 if not found.</td><td><span class="ac pub">Public</span></td><td class="bc">—</td></tr>
+      <tr><td><span class="m patch">PATCH</span></td><td class="pc">/:id</td><td class="dc">Partial update with new:true, returns doc minus __v.</td><td><span class="ac adm">Admin</span></td><td class="bc">name?, image?</td></tr>
+      <tr><td><span class="m delete">DELETE</span></td><td class="pc">/:id</td><td class="dc">Delete and return a success message.</td><td><span class="ac adm">Admin</span></td><td class="bc">—</td></tr>
+    </table>
+  </div>
+
+  <!-- SUBCATEGORY -->
+  <div id="sec-subcat" class="sec">
+    <div class="mhdr"><span class="mtitle">SubCategory</span><span class="mbase">/api/v1/sub-category</span></div>
+    <div class="mdesc">Nested categorization scoped to a parent Category. On creation, validates that the referenced category ObjectId exists. The <code style="font-family:var(--font-mono);font-size:12px">category</code> field is populated (excluding _id and __v) in all responses.</div>
+    <table class="rt">
+      <tr><th style="width:80px">Method</th><th style="width:140px">Route</th><th>Description</th><th>Access</th><th>Body</th></tr>
+      <tr><td><span class="m post">POST</span></td><td class="pc">/</td><td class="dc">Create. Validates parent category exists. 400 on duplicate name.</td><td><span class="ac adm">Admin</span></td><td class="bc">name, category (ObjectId)</td></tr>
+      <tr><td><span class="m get">GET</span></td><td class="pc">/</td><td class="dc">All sub-categories, populated category. Returns length + isEmpty.</td><td><span class="ac pub">Public</span></td><td class="bc">—</td></tr>
+      <tr><td><span class="m get">GET</span></td><td class="pc">/:id</td><td class="dc">Single sub-category with category populated. 404 if not found.</td><td><span class="ac pub">Public</span></td><td class="bc">—</td></tr>
+      <tr><td><span class="m patch">PATCH</span></td><td class="pc">/:id</td><td class="dc">Partial update. Returns updated doc with category populated.</td><td><span class="ac adm">Admin</span></td><td class="bc">name?, category?</td></tr>
+      <tr><td><span class="m delete">DELETE</span></td><td class="pc">/:id</td><td class="dc">Delete and return success message.</td><td><span class="ac adm">Admin</span></td><td class="bc">—</td></tr>
+    </table>
+  </div>
+
+  <!-- COUPON -->
+  <div id="sec-coupon" class="sec">
+    <div class="mhdr"><span class="mtitle">Coupon</span><span class="mbase">/api/v1/coupon</span></div>
+    <div class="mdesc">Discount coupons with an absolute price reduction (not percentage). All routes are admin-only. Expiry validation runs in the controller before any service call — on both create and update.</div>
+    <table class="rt">
+      <tr><th style="width:80px">Method</th><th style="width:140px">Route</th><th>Description</th><th>Access</th><th>Body</th></tr>
+      <tr><td><span class="m post">POST</span></td><td class="pc">/</td><td class="dc">Create. Controller rejects if expireDate is already past.</td><td><span class="ac adm">Admin</span></td><td class="bc">name, expireDate, discount</td></tr>
+      <tr><td><span class="m get">GET</span></td><td class="pc">/</td><td class="dc">All coupons with length count.</td><td><span class="ac adm">Admin</span></td><td class="bc">—</td></tr>
+      <tr><td><span class="m get">GET</span></td><td class="pc">/:id</td><td class="dc">Single coupon. 404 if not found.</td><td><span class="ac adm">Admin</span></td><td class="bc">—</td></tr>
+      <tr><td><span class="m patch">PATCH</span></td><td class="pc">/:id</td><td class="dc">Update. Validates expireDate in future if provided.</td><td><span class="ac adm">Admin</span></td><td class="bc">name?, expireDate?, discount?</td></tr>
+      <tr><td><span class="m delete">DELETE</span></td><td class="pc">/:id</td><td class="dc">Permanently delete. Returns void.</td><td><span class="ac adm">Admin</span></td><td class="bc">—</td></tr>
+    </table>
+    <div class="note"><p><code>discount</code> is an absolute amount subtracted from <code>totalPrice</code> in CartService. Coupons can only be applied once per cart (checked by name).</p></div>
+  </div>
+
+  <!-- PRODUCT -->
+  <div id="sec-product" class="sec">
+    <div class="mhdr"><span class="mtitle">Product</span><span class="mbase">/api/v1/product</span></div>
+    <div class="mdesc">Core product catalog. Admin writes, public reads. <code style="font-family:var(--font-mono);font-size:12px">findAll</code> supports a rich query API via the <code style="font-family:var(--font-mono);font-size:12px">ApiFeatures</code> utility. Category can be queried by ObjectId or name (case-insensitive regex). Product responses populate category, subCategory, and brand.</div>
+    <table class="rt">
+      <tr><th style="width:80px">Method</th><th style="width:140px">Route</th><th>Description</th><th>Access</th><th>Body</th></tr>
+      <tr><td><span class="m post">POST</span></td><td class="pc">/</td><td class="dc">Create. Validates category and subCategory exist. Checks price &gt; discount.</td><td><span class="ac adm">Admin</span></td><td class="bc">title, description, price, quantity, imageCover, category, ...</td></tr>
+      <tr><td><span class="m get">GET</span></td><td class="pc">/</td><td class="dc">All products with ApiFeatures: filter, search, sort, limitFields, paginate.</td><td><span class="ac pub">Public</span></td><td class="bc">query params (see below)</td></tr>
+      <tr><td><span class="m get">GET</span></td><td class="pc">/:id</td><td class="dc">Single product with populated refs. 404 if not found.</td><td><span class="ac pub">Public</span></td><td class="bc">—</td></tr>
+      <tr><td><span class="m patch">PATCH</span></td><td class="pc">/:id</td><td class="dc">Partial update. Re-validates category, subCategory, price vs discount.</td><td><span class="ac adm">Admin</span></td><td class="bc">any product fields</td></tr>
+      <tr><td><span class="m delete">DELETE</span></td><td class="pc">/:id</td><td class="dc">Permanently delete. Returns void.</td><td><span class="ac adm">Admin</span></td><td class="bc">—</td></tr>
+    </table>
+    <div class="section-label" style="margin-top:1rem">ApiFeatures query params</div>
+    <div class="qp-grid">
+      <div class="qp"><div class="qp-name">category</div><div class="qp-desc">ObjectId or name string (regex, case-insensitive)</div></div>
+      <div class="qp"><div class="qp-name">keyword / search</div><div class="qp-desc">Text search via filter chain</div></div>
+      <div class="qp"><div class="qp-name">sort</div><div class="qp-desc">Mongoose sort string e.g. <code style="font-family:var(--font-mono);font-size:11px">-price</code></div></div>
+      <div class="qp"><div class="qp-name">fields</div><div class="qp-desc">Comma-separated field projection</div></div>
+      <div class="qp"><div class="qp-name">page</div><div class="qp-desc">Page number (default 1)</div></div>
+      <div class="qp"><div class="qp-name">limit</div><div class="qp-desc">Items per page (default varies)</div></div>
+    </div>
+  </div>
+
+  <!-- CART -->
+  <div id="sec-cart" class="sec">
+    <div class="mhdr"><span class="mtitle">Cart</span><span class="mbase">/api/v1/cart</span></div>
+    <div class="mdesc">Per-user cart. Totals are computed server-side on every mutation. Formula: <code style="font-family:var(--font-mono);font-size:12px">finalPrice = price × (1 − discount/100)</code>. Admin has full read visibility.</div>
+    <table class="rt">
+      <tr><th style="width:80px">Method</th><th style="width:230px">Route</th><th>Description</th><th>Access</th></tr>
+      <tr><td><span class="m post">POST</span></td><td class="pc">/:productId</td><td class="dc">Add product (qty +1). Creates cart if none. Enforces stock.</td><td><span class="ac usr">User</span></td></tr>
+      <tr><td><span class="m post">POST</span></td><td class="pc">/coupon/:couponName</td><td class="dc">Apply coupon. Validates not expired, not already used in cart.</td><td><span class="ac usr">User</span></td></tr>
+      <tr><td><span class="m get">GET</span></td><td class="pc">/</td><td class="dc">Get user's cart, populated product title/price/description.</td><td><span class="ac usr">User</span></td></tr>
+      <tr><td><span class="m patch">PATCH</span></td><td class="pc">/:productId</td><td class="dc">Update qty or color. qty ≤ 0 removes item.</td><td><span class="ac usr">User</span></td></tr>
+      <tr><td><span class="m delete">DELETE</span></td><td class="pc">/:id</td><td class="dc">Decrement qty -1. Removes item when qty reaches 0.</td><td><span class="ac usr">User</span></td></tr>
+      <tr><td><span class="m get">GET</span></td><td class="pc">/admin/:userId</td><td class="dc">Get any user's cart by userId.</td><td><span class="ac adm">Admin</span></td></tr>
+      <tr><td><span class="m get">GET</span></td><td class="pc">/admin</td><td class="dc">All carts. Populates cartItems, user, couponId.</td><td><span class="ac adm">Admin</span></td></tr>
+    </table>
+    <div class="warn"><p>Route ordering: <code>GET /admin</code> must be registered before <code>GET /:id</code> — otherwise NestJS resolves <code>"admin"</code> as a route param.</p></div>
+  </div>
+
+  <!-- ORDER -->
+  <div id="sec-order" class="sec">
+    <div class="mhdr"><span class="mtitle">Order</span><span class="mnew">new</span></div>
+    <div class="mdesc">Four controllers handle the full checkout lifecycle. Cash and card payments are distinct flows. Stock is decremented and cart is cleared only after confirmed payment.</div>
+
+    <div class="section-label">OrderCheckoutController <span class="ctrl-tag">/api/v1/cart/checkout</span></div>
+    <table class="rt">
+      <tr><th style="width:80px">Method</th><th style="width:260px">Route</th><th>Description</th><th>Access</th></tr>
+      <tr>
+        <td><span class="m post">POST</span></td>
+        <td class="pc">/:paymentMethodType<br><span style="color:var(--color-text-secondary);font-size:11px">?success_url=&cancel_url=</span></td>
+        <td class="dc">Create order. <code style="font-family:var(--font-mono);font-size:12px">paymentMethodType</code> = <code style="font-family:var(--font-mono);font-size:12px">cash</code> or <code style="font-family:var(--font-mono);font-size:12px">card</code>. Card returns Stripe session URL. Cash creates order directly.</td>
+        <td><span class="ac usr">User</span></td>
+      </tr>
+      <tr>
+        <td><span class="m patch">PATCH</span></td>
+        <td class="pc">/:orderId/cash</td>
+        <td class="dc">Admin marks cash order as paid/delivered. Triggers stock update and confirmation email.</td>
+        <td><span class="ac adm">Admin</span></td>
+      </tr>
+    </table>
+
+    <div class="section-label">CheckoutCardController <span class="ctrl-tag">/api/v1/checkout/session</span></div>
+    <table class="rt">
+      <tr><th style="width:80px">Method</th><th style="width:140px">Route</th><th>Description</th><th>Access</th></tr>
+      <tr><td><span class="m post">POST</span></td><td class="pc">/</td><td class="dc">Stripe webhook. Validates signature with <code style="font-family:var(--font-mono);font-size:12px">stripe-signature</code> header. Handles <code style="font-family:var(--font-mono);font-size:12px">checkout.session.completed</code>: marks order paid, decrements stock, clears cart, sends confirmation email.</td><td><span class="ac stripe">Stripe</span></td></tr>
+    </table>
+
+    <div class="section-label">OrderForUserController <span class="ctrl-tag">/api/v1/order/user</span></div>
+    <table class="rt">
+      <tr><th style="width:80px">Method</th><th style="width:140px">Route</th><th>Description</th><th>Access</th></tr>
+      <tr><td><span class="m get">GET</span></td><td class="pc">/</td><td class="dc">All orders for authenticated user.</td><td><span class="ac usr">User</span></td></tr>
+    </table>
+
+    <div class="section-label">OrderForAdminController <span class="ctrl-tag">/api/v1/order/admin</span></div>
+    <table class="rt">
+      <tr><th style="width:80px">Method</th><th style="width:140px">Route</th><th>Description</th><th>Access</th></tr>
+      <tr><td><span class="m get">GET</span></td><td class="pc">/</td><td class="dc">All orders across all users.</td><td><span class="ac adm">Admin</span></td></tr>
+      <tr><td><span class="m get">GET</span></td><td class="pc">/:userId</td><td class="dc">All orders for a specific user.</td><td><span class="ac adm">Admin</span></td></tr>
+    </table>
+
+    <div class="section-label">Order flow</div>
+    <div class="flow">
+      <div class="fstep"><div class="fline"><div class="fdot" style="background:#E5EDFF;color:#1A3A8F">1</div><div class="fconn"></div></div><div class="fbody"><div class="flabel">POST /cart/checkout/:type</div><div class="fdet">Reads cart, fetches Tax model for taxPrice+shippingPrice, builds order</div></div></div>
+      <div class="fstep"><div class="fline"><div class="fdot" style="background:#E5EDFF;color:#1A3A8F">2a</div><div class="fconn"></div></div><div class="fbody"><div class="flabel">Cash path</div><div class="fdet">Order created immediately. Stock updated only if totalOrderPrice === 0. Cart cleared.</div></div></div>
+      <div class="fstep"><div class="fline"><div class="fdot" style="background:#EDE9F8;color:#4A2E9A">2b</div><div class="fconn"></div></div><div class="fbody"><div class="flabel">Card path</div><div class="fdet">Stripe session created with line_items. Order saved with sessionId, isPaid=false.</div></div></div>
+      <div class="fstep"><div class="fline"><div class="fdot" style="background:#EDE9F8;color:#4A2E9A">3b</div><div class="fconn"></div></div><div class="fbody"><div class="flabel">Stripe webhook fires</div><div class="fdet">POST /checkout/session — validates sig, sets isPaid+isDelivered, decrements stock, clears cart, sends email.</div></div></div>
+      <div class="fstep"><div class="fline"><div class="fdot" style="background:#E4F0E8;color:#1B5E20">3a</div></div><div class="fbody"><div class="flabel">Admin confirms cash</div><div class="fdet">PATCH /cart/checkout/:orderId/cash — sets paidAt, triggers updateStock + email.</div></div></div>
+    </div>
+
+    <div class="warn"><p>The Stripe secret key and webhook secret are hardcoded in <code>order.service.ts</code>. Move these to environment variables (<code>STRIPE_SECRET_KEY</code>, <code>STRIPE_WEBHOOK_SECRET</code>) before deploying.</p></div>
+    <div class="note"><p>Stripe CLI for local testing: <code>stripe listen --forward-to localhost:3000/api/v1/checkout/session</code>. The endpoint requires the raw request body — ensure <code>rawBody: true</code> is set in your NestJS app bootstrap.</p></div>
+  </div>
+
+  <!-- REVIEW -->
+  <div id="sec-review" class="sec">
+    <div class="mhdr"><span class="mtitle">Review</span><span class="mnew">new</span></div>
+    <div class="mdesc">Product reviews with a 1–5 star rating. Each user may submit only one review per product. After every create, update, or delete, <code style="font-family:var(--font-mono);font-size:12px">ratingsAverage</code> and <code style="font-family:var(--font-mono);font-size:12px">ratingsQuantity</code> are recalculated and written back to the Product document.</div>
+
+    <div class="section-label">ReviewController <span class="ctrl-tag">/api/v1/review</span></div>
+    <table class="rt">
+      <tr><th style="width:80px">Method</th><th style="width:140px">Route</th><th>Description</th><th>Access</th></tr>
+      <tr><td><span class="m post">POST</span></td><td class="pc">/</td><td class="dc">Create review. One per user/product pair. Recalculates product ratings. Body: reviewText?, rating, product (ObjectId).</td><td><span class="ac usr">User</span></td></tr>
+      <tr><td><span class="m get">GET</span></td><td class="pc">/:id</td><td class="dc">All reviews for a product (id = productId). Populated with user name/email and product title.</td><td><span class="ac pub">Public</span></td></tr>
+      <tr><td><span class="m patch">PATCH</span></td><td class="pc">/:id</td><td class="dc">Update own review only. Recalculates product ratings after update.</td><td><span class="ac usr">User</span></td></tr>
+      <tr><td><span class="m delete">DELETE</span></td><td class="pc">/:id</td><td class="dc">Delete own review only. Recalculates product ratings after delete.</td><td><span class="ac usr">User</span></td></tr>
+    </table>
+
+    <div class="section-label">ReviewDashbourdController <span class="ctrl-tag">/api/v1/dashboard/review</span></div>
+    <table class="rt">
+      <tr><th style="width:80px">Method</th><th style="width:180px">Route</th><th>Description</th><th>Access</th></tr>
+      <tr><td><span class="m get">GET</span></td><td class="pc">/user/:id</td><td class="dc">Admin can query reviews for any userId. A user can only query their own (id must match req.user._id). 401 otherwise.</td><td><span class="ac both">Admin · User</span></td></tr>
+    </table>
+
+    <div class="note"><p>Rating recalculation runs inline after every mutation: all reviews for the product are re-fetched, summed, and averaged. Consider extracting this into a shared helper or a Mongoose post-hook to avoid the triple duplication across create / update / remove.</p></div>
+  </div>
+
+  <!-- REQUEST PRODUCT -->
+  <div id="sec-reqprod" class="sec">
+    <div class="mhdr"><span class="mtitle">Request Product</span><span class="mbase">/api/v1/req-product</span><span class="mnew">new</span></div>
+    <div class="mdesc">Allows users to request products not yet in the catalog. Users own their requests — they can only read, edit, and delete their own. Admins have full read access. Ownership is enforced at the service level by comparing <code style="font-family:var(--font-mono);font-size:12px">req.user._id</code> to the stored user ObjectId.</div>
+    <table class="rt">
+      <tr><th style="width:80px">Method</th><th style="width:140px">Route</th><th>Description</th><th>Access</th></tr>
+      <tr><td><span class="m post">POST</span></td><td class="pc">/</td><td class="dc">Create request. 400 if user already requested same titleNeed. Body: titleNeed, details, qauntity, category?.</td><td><span class="ac usr">User</span></td></tr>
+      <tr><td><span class="m get">GET</span></td><td class="pc">/</td><td class="dc">All requests. Populated user (no password/role). Returns length.</td><td><span class="ac adm">Admin</span></td></tr>
+      <tr><td><span class="m get">GET</span></td><td class="pc">/:id</td><td class="dc">Single request. User can only view own. Admin can view any.</td><td><span class="ac both">Admin · User</span></td></tr>
+      <tr><td><span class="m patch">PATCH</span></td><td class="pc">/:id</td><td class="dc">Update own request only. Ownership verified in service.</td><td><span class="ac usr">User</span></td></tr>
+      <tr><td><span class="m delete">DELETE</span></td><td class="pc">/:id</td><td class="dc">Delete own request only. Returns void.</td><td><span class="ac usr">User</span></td></tr>
+    </table>
+    <div class="warn"><p>In <code>findOne</code> (service), the ownership check runs before the null check — if the document doesn't exist, <code>requestProduct?.user._id</code> will throw rather than returning 404. Swap the order: check for null first, then authorize.</p></div>
+  </div>
+
+  <!-- USER -->
+  <div id="sec-user" class="sec">
+    <div class="mhdr"><span class="mtitle">User</span><span class="mnew">new</span></div>
+    <div class="mdesc">Split into two controllers: <code style="font-family:var(--font-mono);font-size:12px">UserController</code> for admin-only CRUD and <code style="font-family:var(--font-mono);font-size:12px">UserMeController</code> for self-service. Passwords are bcrypt-hashed (saltRounds=10) on create and update. The <code style="font-family:var(--font-mono);font-size:12px">findAll</code> endpoint supports flexible query params for pagination, filtering, and sorting. Deleting your own account sets <code style="font-family:var(--font-mono);font-size:12px">active=false</code> rather than hard-deleting.</div>
+
+    <div class="section-label">UserController <span class="ctrl-tag">/api/v1/user</span></div>
+    <table class="rt">
+      <tr><th style="width:80px">Method</th><th style="width:160px">Route</th><th>Description</th><th>Access</th><th>Body / Params</th></tr>
+      <tr><td><span class="m post">POST</span></td><td class="pc">/</td><td class="dc">Create a new user. 400 if email already exists. Password is hashed before storage.</td><td><span class="ac adm">Admin</span></td><td class="bc">name, email, password, role, age?, phoneNumber?, address?, avatar?, gender?</td></tr>
+      <tr><td><span class="m get">GET</span></td><td class="pc">/</td><td class="dc">All users (excluding password). Supports query params below.</td><td><span class="ac adm">Admin</span></td><td class="bc">query params</td></tr>
+      <tr><td><span class="m get">GET</span></td><td class="pc">/:id</td><td class="dc">Single user by ObjectId. 404 if not found.</td><td><span class="ac adm">Admin</span></td><td class="bc">—</td></tr>
+      <tr><td><span class="m patch">PATCH</span></td><td class="pc">/:id</td><td class="dc">Partial update. Password re-hashed if provided. Returns updated doc.</td><td><span class="ac adm">Admin</span></td><td class="bc">any user fields</td></tr>
+      <tr><td><span class="m delete">DELETE</span></td><td class="pc">/:id</td><td class="dc">Hard delete. Returns 200 with success message.</td><td><span class="ac adm">Admin</span></td><td class="bc">—</td></tr>
+    </table>
+
+    <div class="section-label" style="margin-top:1rem">findAll query params</div>
+    <div class="qp-grid">
+      <div class="qp"><div class="qp-name">_limit</div><div class="qp-desc">Max records returned (default 1000)</div></div>
+      <div class="qp"><div class="qp-name">skip</div><div class="qp-desc">Number of records to skip (default 0)</div></div>
+      <div class="qp"><div class="qp-name">sort</div><div class="qp-desc"><code style="font-family:var(--font-mono);font-size:11px">asc</code> or <code style="font-family:var(--font-mono);font-size:11px">desc</code> — sorts by name</div></div>
+      <div class="qp"><div class="qp-name">name / email / role</div><div class="qp-desc">Regex filter (case-insensitive)</div></div>
+    </div>
+
+    <div class="section-label" style="margin-top:1.25rem">UserMeController <span class="ctrl-tag">/api/v1/userMe</span></div>
+    <table class="rt">
+      <tr><th style="width:80px">Method</th><th style="width:160px">Route</th><th>Description</th><th>Access</th></tr>
+      <tr><td><span class="m get">GET</span></td><td class="pc">/</td><td class="dc">Get own profile from JWT payload. 404 if user deleted.</td><td><span class="ac both">Admin · User</span></td></tr>
+      <tr><td><span class="m patch">PATCH</span></td><td class="pc">/</td><td class="dc">Update own profile. Role changes are forbidden (403). Password re-hashed if provided.</td><td><span class="ac both">Admin · User</span></td></tr>
+      <tr><td><span class="m delete">DELETE</span></td><td class="pc">/</td><td class="dc">Soft-delete own account — sets <code style="font-family:var(--font-mono);font-size:12px">active=false</code>. Does not hard delete.</td><td><span class="ac usr">User</span></td></tr>
+    </table>
+    <div class="note"><p>JWT payload fields used: <code>_id</code>, <code>role</code>. The guard attaches the full payload to <code>req.user</code>, which is passed directly into service methods for identity checks.</p></div>
+  </div>
+
+  <!-- SUPPLIERS -->
+  <div id="sec-suppliers" class="sec">
+    <div class="mhdr"><span class="mtitle">Suppliers</span><span class="mbase">/api/v1/suppliers</span><span class="mnew">new</span></div>
+    <div class="mdesc">Admin-managed product supplier registry. Duplicate names are rejected via case-sensitive exact match before insert. Public read access requires no authentication.</div>
+    <table class="rt">
+      <tr><th style="width:80px">Method</th><th style="width:140px">Route</th><th>Description</th><th>Access</th><th>Body</th></tr>
+      <tr><td><span class="m post">POST</span></td><td class="pc">/</td><td class="dc">Create supplier. 400 if name already exists.</td><td><span class="ac adm">Admin</span></td><td class="bc">name, website?</td></tr>
+      <tr><td><span class="m get">GET</span></td><td class="pc">/</td><td class="dc">All suppliers. Returns length + data. Excludes __v.</td><td><span class="ac pub">Public</span></td><td class="bc">—</td></tr>
+      <tr><td><span class="m get">GET</span></td><td class="pc">/:id</td><td class="dc">Single supplier by ObjectId. 404 if not found.</td><td><span class="ac pub">Public</span></td><td class="bc">—</td></tr>
+      <tr><td><span class="m patch">PATCH</span></td><td class="pc">/:id</td><td class="dc">Partial update. Returns updated doc.</td><td><span class="ac adm">Admin</span></td><td class="bc">name?, website?</td></tr>
+      <tr><td><span class="m delete">DELETE</span></td><td class="pc">/:id</td><td class="dc">Permanently delete. Returns void.</td><td><span class="ac adm">Admin</span></td><td class="bc">—</td></tr>
+    </table>
+    <div class="sg" style="margin-top:1rem">
+      <div class="sc"><div class="sn">Supplier Schema</div><div class="snote">timestamps: true</div>
+        <div class="fr"><span class="fn">name</span><span class="ft">String</span><span class="fr2">req · min 3 · max 100</span></div>
+        <div class="fr"><span class="fn">website</span><span class="ft">String</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAX -->
+  <div id="sec-tax" class="sec">
+    <div class="mhdr"><span class="mtitle">Tax</span><span class="mbase">/api/v1/tex</span><span class="mnew">new</span></div>
+    <div class="mdesc">Singleton tax and shipping configuration. Only one record exists in the collection at any time. <code style="font-family:var(--font-mono);font-size:12px">POST</code> acts as <strong>upsert</strong> — it creates the record if none exists, or updates the existing one. All three routes are admin-only. The <code style="font-family:var(--font-mono);font-size:12px">taxPrice</code> and <code style="font-family:var(--font-mono);font-size:12px">shippingPrice</code> values are consumed by the Order module when calculating <code style="font-family:var(--font-mono);font-size:12px">totalOrderPrice</code>.</div>
+    <table class="rt">
+      <tr><th style="width:80px">Method</th><th style="width:140px">Route</th><th>Description</th><th>Access</th><th>Body</th></tr>
+      <tr><td><span class="m post">POST</span></td><td class="pc">/</td><td class="dc">Create or update the singleton tax record (upsert). Returns the saved document.</td><td><span class="ac adm">Admin</span></td><td class="bc">taxPrice, shippingPrice</td></tr>
+      <tr><td><span class="m get">GET</span></td><td class="pc">/</td><td class="dc">Get the current tax config. Excludes __v.</td><td><span class="ac adm">Admin</span></td><td class="bc">—</td></tr>
+      <tr><td><span class="m delete">DELETE</span></td><td class="pc">/</td><td class="dc">Reset both values to 0. Does not delete the record.</td><td><span class="ac adm">Admin</span></td><td class="bc">—</td></tr>
+    </table>
+    <div class="sg" style="margin-top:1rem">
+      <div class="sc"><div class="sn">Tax Schema</div><div class="snote">timestamps: true · singleton (findOne({}))</div>
+        <div class="fr"><span class="fn">taxPrice</span><span class="ft">Number</span><span class="fr2">default 0</span></div>
+        <div class="fr"><span class="fn">shippingPrice</span><span class="ft">Number</span><span class="fr2">default 0</span></div>
+      </div>
+    </div>
+    <div class="note" style="margin-top:1rem"><p>Route path uses <code>tex</code> (not <code>tax</code>) to match the controller decorator. Keep this consistent across the codebase to avoid 404s.</p></div>
+  </div>
+
+  <!-- IMAGE UPLOAD -->
+  <div id="sec-image" class="sec">
+    <div class="mhdr"><span class="mtitle">Image Upload</span><span class="mbase">/api/v1/image</span><span class="mnew">new</span></div>
+    <div class="mdesc">Cloudinary-backed file upload via multipart/form-data. Two endpoints handle single and bulk uploads. Files are streamed directly to Cloudinary using Node.js <code style="font-family:var(--font-mono);font-size:12px">Readable.from(buffer)</code> — no temp files on disk. The module exports both the service and provider so other modules can inject <code style="font-family:var(--font-mono);font-size:12px">CloudinaryService</code> directly.</div>
+
+    <div class="section-label">UploadFilesController <span class="ctrl-tag">/api/v1/image</span></div>
+    <table class="rt">
+      <tr><th style="width:80px">Method</th><th style="width:160px">Route</th><th>Description</th><th>Access</th></tr>
+      <tr>
+        <td><span class="m post">POST</span></td>
+        <td class="pc">/upload</td>
+        <td class="dc">Upload a single file. Field name: <code style="font-family:var(--font-mono);font-size:12px">file</code>. Max size: 5 MB. Allowed types: jpg, jpeg, png, webp. Returns the full Cloudinary <code style="font-family:var(--font-mono);font-size:12px">UploadApiResponse</code>.</td>
+        <td><span class="ac both">Admin · User</span></td>
+      </tr>
+      <tr>
+        <td><span class="m post">POST</span></td>
+        <td class="pc">/uploads</td>
+        <td class="dc">Upload up to 5 files. Field name: <code style="font-family:var(--font-mono);font-size:12px">files[]</code>. Max size per file: 500 KB. Allowed type: image/png only. Returns an array of Cloudinary responses.</td>
+        <td><span class="ac adm">Admin</span></td>
+      </tr>
+    </table>
+
+    <div class="section-label" style="margin-top:1.25rem">Request format</div>
+    <div class="sg">
+      <div class="sc">
+        <div class="sn">Single upload — <code style="font-family:var(--font-mono);font-size:12px">/upload</code></div>
+        <div class="snote">Content-Type: multipart/form-data</div>
+        <div class="fr"><span class="fn">file</span><span class="ft">File</span><span class="fr2">req · max 5 MB · jpg/jpeg/png/webp</span></div>
+      </div>
+      <div class="sc">
+        <div class="sn">Multi upload — <code style="font-family:var(--font-mono);font-size:12px">/uploads</code></div>
+        <div class="snote">Content-Type: multipart/form-data</div>
+        <div class="fr"><span class="fn">files[]</span><span class="ft">File[]</span><span class="fr2">req · max 5 files · 500 KB each · png only</span></div>
+      </div>
+    </div>
+
+    <div class="warn"><p>Cloudinary credentials (<code>cloud_name</code>, <code>api_key</code>, <code>api_secret</code>) are hardcoded in <code>cloudinary.provider.ts</code>. Move these to environment variables (<code>CLOUDINARY_CLOUD_NAME</code>, <code>CLOUDINARY_API_KEY</code>, <code>CLOUDINARY_API_SECRET</code>) before deploying.</p></div>
+    <div class="note"><p>The <code>UploadFilesModule</code> exports both <code>CloudinaryService</code> and <code>CloudinaryProvider</code>. Import this module in any feature module (e.g. Product) that needs to attach images during create/update.</p></div>
+  </div>
+
+  <!-- SCHEMAS -->
+  <div id="sec-schemas" class="sec">
+    <div class="mhdr"><span class="mtitle">Mongoose Schemas</span></div>
+    <div class="sg">
+      <div class="sc"><div class="sn">Brand</div><div class="snote">timestamps: true</div>
+        <div class="fr"><span class="fn">name</span><span class="ft">String</span><span class="fr2">req · min 3 · max 100</span></div>
+        <div class="fr"><span class="fn">image</span><span class="ft">String</span></div>
+      </div>
+      <div class="sc"><div class="sn">Category</div><div class="snote">timestamps: true</div>
+        <div class="fr"><span class="fn">name</span><span class="ft">String</span><span class="fr2">req · min 3 · max 40</span></div>
+        <div class="fr"><span class="fn">image</span><span class="ft">String</span></div>
+      </div>
+      <div class="sc"><div class="sn">SubCategory</div><div class="snote">timestamps: true</div>
+        <div class="fr"><span class="fn">name</span><span class="ft">String</span><span class="fr2">req · min 3 · max 30</span></div>
+        <div class="fr"><span class="fn">category</span><span class="ft">ObjectId</span><span class="fr2">ref: Category · req</span></div>
+      </div>
+      <div class="sc"><div class="sn">Coupon</div><div class="snote">timestamps: true</div>
+        <div class="fr"><span class="fn">name</span><span class="ft">String</span><span class="fr2">req · min 3 · max 100</span></div>
+        <div class="fr"><span class="fn">expireDate</span><span class="ft">Date</span><span class="fr2">required</span></div>
+        <div class="fr"><span class="fn">discount</span><span class="ft">Number</span><span class="fr2">req · absolute amount</span></div>
+      </div>
+      <div class="sc"><div class="sn">Product</div><div class="snote">timestamps: true</div>
+        <div class="fr"><span class="fn">title</span><span class="ft">String</span><span class="fr2">req · min 3</span></div>
+        <div class="fr"><span class="fn">description</span><span class="ft">String</span><span class="fr2">req · min 20</span></div>
+        <div class="fr"><span class="fn">quantity</span><span class="ft">Number</span><span class="fr2">req · min 1</span></div>
+        <div class="fr"><span class="fn">price</span><span class="ft">Number</span><span class="fr2">req · 1–200000</span></div>
+        <div class="fr"><span class="fn">discount</span><span class="ft">Number</span><span class="fr2">default 0</span></div>
+        <div class="fr"><span class="fn">imageCover</span><span class="ft">String</span><span class="fr2">required</span></div>
+        <div class="fr"><span class="fn">images</span><span class="ft">String[]</span></div>
+        <div class="fr"><span class="fn">colors</span><span class="ft">Array</span></div>
+        <div class="fr"><span class="fn">sold</span><span class="ft">Number</span><span class="fr2">default 0</span></div>
+        <div class="fr"><span class="fn">category</span><span class="ft">ObjectId</span><span class="fr2">ref: Category · req</span></div>
+        <div class="fr"><span class="fn">subCategory</span><span class="ft">ObjectId</span><span class="fr2">ref: SubCategory</span></div>
+        <div class="fr"><span class="fn">brand</span><span class="ft">ObjectId</span><span class="fr2">ref: Brand</span></div>
+        <div class="fr"><span class="fn">ratingsAverage</span><span class="ft">Number</span><span class="fr2">default 0</span></div>
+        <div class="fr"><span class="fn">ratingsQuantity</span><span class="ft">Number</span><span class="fr2">default 0</span></div>
+      </div>
+      <div class="sc"><div class="sn">Order</div><div class="snote">timestamps: true</div>
+        <div class="fr"><span class="fn">user</span><span class="ft">ObjectId</span><span class="fr2">ref: User · req</span></div>
+        <div class="fr"><span class="fn">sessionId</span><span class="ft">String</span><span class="fr2">Stripe session</span></div>
+        <div class="fr"><span class="fn">cartItems[]</span><span class="ft">Array</span><span class="fr2">productId · qty · color</span></div>
+        <div class="fr"><span class="fn">taxPrice</span><span class="ft">Number</span><span class="fr2">default 0</span></div>
+        <div class="fr"><span class="fn">shippingPrice</span><span class="ft">Number</span><span class="fr2">default 0</span></div>
+        <div class="fr"><span class="fn">totalOrderPrice</span><span class="ft">Number</span><span class="fr2">required</span></div>
+        <div class="fr"><span class="fn">paymentMethodType</span><span class="ft">String</span><span class="fr2">enum: cash | card</span></div>
+        <div class="fr"><span class="fn">isPaid</span><span class="ft">Boolean</span><span class="fr2">default false</span></div>
+        <div class="fr"><span class="fn">paidAt</span><span class="ft">Date</span></div>
+        <div class="fr"><span class="fn">isDelivered</span><span class="ft">Boolean</span><span class="fr2">default false</span></div>
+        <div class="fr"><span class="fn">deliveredAt</span><span class="ft">Date</span></div>
+        <div class="fr"><span class="fn">shippingAddress</span><span class="ft">String</span></div>
+      </div>
+      <div class="sc"><div class="sn">Review</div><div class="snote">timestamps: true</div>
+        <div class="fr"><span class="fn">reviewText</span><span class="ft">String</span><span class="fr2">optional · min 3</span></div>
+        <div class="fr"><span class="fn">rating</span><span class="ft">Number</span><span class="fr2">req · 1–5</span></div>
+        <div class="fr"><span class="fn">user</span><span class="ft">ObjectId</span><span class="fr2">ref: User · req</span></div>
+        <div class="fr"><span class="fn">product</span><span class="ft">ObjectId</span><span class="fr2">ref: Product · req</span></div>
+      </div>
+      <div class="sc"><div class="sn">RequestProduct</div><div class="snote">timestamps: true</div>
+        <div class="fr"><span class="fn">titleNeed</span><span class="ft">String</span><span class="fr2">required</span></div>
+        <div class="fr"><span class="fn">details</span><span class="ft">String</span><span class="fr2">req · min 5</span></div>
+        <div class="fr"><span class="fn">qauntity</span><span class="ft">Number</span><span class="fr2">req · min 1</span></div>
+        <div class="fr"><span class="fn">category</span><span class="ft">String</span></div>
+        <div class="fr"><span class="fn">user</span><span class="ft">ObjectId</span><span class="fr2">ref: User · req</span></div>
+      </div>
+      <div class="sc"><div class="sn">Supplier</div><div class="snote">timestamps: true</div>
+        <div class="fr"><span class="fn">name</span><span class="ft">String</span><span class="fr2">req · min 3 · max 100</span></div>
+        <div class="fr"><span class="fn">website</span><span class="ft">String</span></div>
+      </div>
+      <div class="sc"><div class="sn">Tax</div><div class="snote">timestamps: true · singleton</div>
+        <div class="fr"><span class="fn">taxPrice</span><span class="ft">Number</span><span class="fr2">default 0</span></div>
+        <div class="fr"><span class="fn">shippingPrice</span><span class="ft">Number</span><span class="fr2">default 0</span></div>
+      </div>
+      <div class="sc"><div class="sn">User</div><div class="snote">timestamps: true</div>
+        <div class="fr"><span class="fn">name</span><span class="ft">String</span><span class="fr2">req · min 3 · max 30</span></div>
+        <div class="fr"><span class="fn">email</span><span class="ft">String</span><span class="fr2">req · unique</span></div>
+        <div class="fr"><span class="fn">password</span><span class="ft">String</span><span class="fr2">req · bcrypt hashed</span></div>
+        <div class="fr"><span class="fn">role</span><span class="ft">String</span><span class="fr2">enum: user | admin</span></div>
+        <div class="fr"><span class="fn">avatar</span><span class="ft">String</span></div>
+        <div class="fr"><span class="fn">age</span><span class="ft">Number</span></div>
+        <div class="fr"><span class="fn">phoneNumber</span><span class="ft">String</span></div>
+        <div class="fr"><span class="fn">address</span><span class="ft">String</span></div>
+        <div class="fr"><span class="fn">active</span><span class="ft">Boolean</span></div>
+        <div class="fr"><span class="fn">gender</span><span class="ft">String</span><span class="fr2">enum: male | female</span></div>
+        <div class="fr"><span class="fn">resetTokenHash</span><span class="ft">String</span><span class="fr2">SHA-256</span></div>
+        <div class="fr"><span class="fn">resetCode</span><span class="ft">String</span><span class="fr2">6-digit OTP</span></div>
+        <div class="fr"><span class="fn">resetExpires</span><span class="ft">Date</span><span class="fr2">+10 min TTL</span></div>
+        <div class="fr"><span class="fn">isResetVerified</span><span class="ft">Boolean</span><span class="fr2">default false</span></div>
+      </div>
+    </div>
+
+    <hr class="divider">
+    <div class="mhdr" style="margin-top:0"><span class="mtitle">Cart</span></div>
+    <div class="sg">
+      <div class="sc"><div class="sn">Cart</div><div class="snote">timestamps: true</div>
+        <div class="fr"><span class="fn">user</span><span class="ft">ObjectId</span><span class="fr2">ref: User · req</span></div>
+        <div class="fr"><span class="fn">cartItems[]</span><span class="ft">Array</span><span class="fr2">productId · quantity · color</span></div>
+        <div class="fr"><span class="fn">coupons[]</span><span class="ft">Array</span><span class="fr2">name · couponId</span></div>
+        <div class="fr"><span class="fn">totalPrice</span><span class="ft">Number</span><span class="fr2">default 0</span></div>
+        <div class="fr"><span class="fn">totalPriceAfterDiscount</span><span class="ft">Number</span><span class="fr2">default 0</span></div>
+      </div>
+      <div class="sc"><div class="sn">User (referenced)</div><div class="snote">Extended with reset-password fields</div>
+        <div class="fr"><span class="fn">email</span><span class="ft">String</span><span class="fr2">unique</span></div>
+        <div class="fr"><span class="fn">password</span><span class="ft">String</span><span class="fr2">bcrypt hashed</span></div>
+        <div class="fr"><span class="fn">role</span><span class="ft">String</span><span class="fr2">user | admin</span></div>
+        <div class="fr"><span class="fn">resetTokenHash</span><span class="ft">String</span><span class="fr2">SHA-256</span></div>
+        <div class="fr"><span class="fn">resetCode</span><span class="ft">String</span><span class="fr2">6-digit OTP</span></div>
+        <div class="fr"><span class="fn">resetExpires</span><span class="ft">Date</span><span class="fr2">+10 min TTL</span></div>
+        <div class="fr"><span class="fn">isResetVerified</span><span class="ft">Boolean</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function show(id, btn) {
+  document.querySelectorAll('.sec').forEach(s => s.classList.remove('visible'));
+  document.getElementById('sec-' + id).classList.add('visible');
+  document.querySelectorAll('.nb').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+</script>
